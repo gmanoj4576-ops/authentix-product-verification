@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, send_from_directory
 from flask_cors import CORS
 import os
 from config import Config
@@ -30,6 +30,17 @@ def create_app():
     @app.route('/')
     def index():
         return render_template('index.html')
+
+    # Serve QR images dynamically from /tmp/qrcodes or static/qrcodes
+    @app.route('/static/qrcodes/<filename>')
+    def serve_qr(filename):
+        file_path = os.path.join(Config.QR_FOLDER, filename)
+        if os.path.exists(file_path):
+            return send_from_directory(Config.QR_FOLDER, filename)
+        static_qr = os.path.join(Config.STATIC_FOLDER, 'qrcodes', filename)
+        if os.path.exists(static_qr):
+            return send_from_directory(os.path.join(Config.STATIC_FOLDER, 'qrcodes'), filename)
+        return "QR Code not found", 404
 
     # Error Handlers (never expose internal tracebacks to customers)
     @app.errorhandler(404)
