@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}GENUINE PRODUCT VERIFIED | AUTHENTIX{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="glass-card result-container border-success border-opacity-50">
+    <div class="pulse-badge-success">
+      <i class="fa-solid fa-check fs-1"></i>
+    </div>
+
+    <h1 class="display-5 fw-bold text-success mb-2">&check; GENUINE PRODUCT</h1>
+    <p class="lead text-white fw-bold mb-4 fs-4">This product is 100% genuine and verified in factory records.</p>
+
+    <div class="alert alert-success bg-success bg-opacity-15 border-success text-white p-3 mb-4 rounded-3 text-start">
+      <i class="fa-solid fa-circle-check me-2 text-success"></i>
+      <strong>Great news!</strong> The QR code and verification code match the manufacturer's official database records.
+    </div>
+
+    <div class="bg-dark bg-opacity-75 p-4 rounded-4 text-start mb-4 border border-success border-opacity-25">
+      <h5 class="fw-bold text-white mb-3 border-bottom border-secondary border-opacity-25 pb-2">Verified Product Details</h5>
+      <div class="row g-3">
+        <div class="col-sm-6">
+          <span class="text-muted small d-block">Product Name</span>
+          <h5 class="text-white fw-bold mb-0">{{ result.product.product_name }}</h5>
+        </div>
+
+        <div class="col-sm-6">
+          <span class="text-muted small d-block">Brand Manufacturer</span>
+          <h5 class="text-cyan fw-bold mb-0">{{ result.product.brand }}</h5>
+        </div>
+
+        <div class="col-sm-6">
+          <span class="text-muted small d-block">Official Product ID</span>
+          <span class="font-code text-white fw-semibold">{{ result.product.product_id }}</span>
+        </div>
+
+        <div class="col-sm-6">
+          <span class="text-muted small d-block">Batch Number</span>
+          <span class="font-code text-white fw-semibold">{{ result.product.batch_number }}</span>
+        </div>
+
+        <div class="col-sm-6">
+          <span class="text-muted small d-block">Manufacturer Facility</span>
+          <span class="text-white">{{ result.product.manufacturer or 'Authorized Manufacturer Facility' }}</span>
+        </div>
+
+        <div class="col-sm-6">
+          <span class="text-muted small d-block">Manufacturing Date</span>
+          <span class="text-white">{{ result.product.manufacturing_date or 'N/A' }}</span>
+        </div>
+
+        <div class="col-sm-6">
+          <span class="text-muted small d-block">Expiration Date</span>
+          <span class="text-white">{{ result.product.expiry_date or 'N/A' }}</span>
+        </div>
+
+        <div class="col-sm-6">
+          <span class="text-muted small d-block">Verification Timestamp</span>
+          <span class="text-success small fw-semibold">{{ result.verification_time }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex flex-wrap justify-content-center gap-3">
+      <a href="{{ url_for('verification.verify_page') }}" class="btn btn-cyan btn-lg px-4 py-2.5">
+        <i class="fa-solid fa-qrcode me-2"></i> Verify Another Item
+      </a>
+      <a href="{{ url_for('index') }}" class="btn btn-outline-cyber btn-lg px-4 py-2.5">
+        Back to Home
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}AUTHENTIX PRODUCT QR | {{ product.product_name }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      
+      <!-- Printable Card Box -->
+      <div id="printable-qr-card" class="glass-card p-4 p-md-5 text-center text-white border-info border-opacity-50">
+        
+        <div class="brand-logo justify-content-center mb-3">
+          <i class="fa-solid fa-shield-halved text-cyan"></i>
+          <span>AUTH<span class="badge-shield">ENTIX</span></span>
+        </div>
+        <p class="small text-muted uppercase tracking-2 mb-4">Official Product Authentication Tag</p>
+
+        <div class="mb-3">
+          <span class="text-muted small d-block">Product</span>
+          <h4 class="fw-bold text-white mb-0">{{ product.product_name }}</h4>
+        </div>
+
+        <div class="mb-4">
+          <span class="text-muted small d-block">Product ID</span>
+          <strong class="font-code text-cyan fs-5">{{ product.product_id }}</strong>
+        </div>
+
+        <!-- QR Code Container -->
+        <div class="p-3 bg-white rounded-4 d-inline-block shadow-lg mb-4">
+          <img src="{{ qr_image_path }}" alt="AUTHENTIX Product QR" style="width: 220px; height: 220px;">
+        </div>
+
+        <div class="p-3 bg-dark bg-opacity-75 rounded-3 mb-4 border border-warning border-opacity-50">
+          <span class="text-warning small d-block fw-bold mb-1"><i class="fa-solid fa-key me-1"></i> Verification Code (Package Label)</span>
+          <div class="font-code text-white fs-3 fw-extrabold letter-spacing-2">X7K9-P4M2-Q8T6</div>
+          <small class="text-muted d-block mt-1">Note: Verification Code is printed separately and is NOT encoded inside the QR link.</small>
+        </div>
+
+        <p class="small text-muted font-code text-truncate max-w-300 mx-auto mb-0" title="{{ encoded_url }}">{{ encoded_url }}</p>
+      </div>
+
+      <!-- Control Buttons -->
+      <div class="d-flex justify-content-center gap-2 mt-4">
+        <a href="{{ url_for('products.download_qr', product_id=product.product_id) }}" class="btn btn-cyan">
+          <i class="fa-solid fa-download me-2"></i> Download QR Image
+        </a>
+        <button type="button" class="btn btn-outline-cyber" onclick="window.print();">
+          <i class="fa-solid fa-print me-2"></i> Print QR Label
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style>
+@media print {
+  body * { visibility: hidden; }
+  #printable-qr-card, #printable-qr-card * { visibility: visible; }
+  #printable-qr-card { position: absolute; left: 0; top: 0; width: 100%; color: #000 !important; background: #fff !important; }
+}
+</style>
+{% endblock %}

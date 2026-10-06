@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}INVALID PRODUCT REFERENCE | AUTHENTIX{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="glass-card result-container border-warning border-opacity-50">
+    <div class="pulse-badge-danger" style="border-color: #F59E0B; box-shadow: 0 0 30px rgba(245, 158, 11, 0.3);">
+      <i class="fa-solid fa-circle-exclamation text-warning"></i>
+    </div>
+
+    <h1 class="display-6 fw-bold text-warning mb-2">&warning; INVALID PRODUCT</h1>
+    
+    <div class="alert alert-warning bg-warning bg-opacity-15 border-warning text-white p-3 mb-4 rounded-3">
+      <strong>This product reference could not be found in the verification system.</strong>
+    </div>
+
+    <p class="text-muted mb-4">
+      The scanned QR reference token does not match any registered product in the authentic manufacturer database. This attempt has been logged.
+    </p>
+
+    <div class="d-flex justify-content-center gap-3">
+      <a href="{{ url_for('verification.verify_page') }}" class="btn btn-cyan">
+        <i class="fa-solid fa-qrcode me-2"></i> Scan Another QR Code
+      </a>
+      <a href="{{ url_for('index') }}" class="btn btn-outline-cyber">
+        Return Home
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

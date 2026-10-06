@@ -1,0 +1,27 @@
+# Byte-compiled / optimized files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# Environment variables
+.env
+
+# Local Database & QR images
+database/authentix.db
+static/qrcodes/*.png
+!static/qrcodes/.gitkeep
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Vercel
+.vercel

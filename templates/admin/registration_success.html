@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Product Registered Successfully | AUTHENTIX{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="glass-card p-4 p-md-5 text-center">
+        
+        <div class="d-inline-flex p-3 rounded-circle bg-success bg-opacity-25 text-success mb-3">
+          <i class="fa-solid fa-circle-check fs-1"></i>
+        </div>
+
+        <h2 class="fw-bold text-white mb-1">Product Successfully Registered</h2>
+        <p class="text-muted small mb-4">The authentic product record, secure code hash, and reference QR have been initialized in the system.</p>
+
+        <!-- Product Credentials Grid -->
+        <div class="bg-dark bg-opacity-75 p-4 rounded-4 text-start mb-4 border border-secondary border-opacity-25">
+          <div class="row g-3 align-items-center">
+            
+            <div class="col-md-7">
+              <div class="mb-3">
+                <span class="text-muted small d-block">Product Name</span>
+                <h5 class="text-white fw-bold mb-0">{{ data.product.product_name }}</h5>
+              </div>
+
+              <div class="mb-3">
+                <span class="text-muted small d-block">Generated Product ID</span>
+                <strong class="font-code text-cyan fs-5">{{ data.product.product_id }}</strong>
+              </div>
+
+              <div class="p-3 bg-dark rounded-3 border border-warning border-opacity-50">
+                <span class="text-warning small d-block fw-bold mb-1"><i class="fa-solid fa-key me-1"></i> Secret Verification Code (For Packaging Print)</span>
+                <div class="font-code text-white fs-4 fw-extrabold letter-spacing-2">{{ data.verification_code }}</div>
+                <small class="text-muted d-block mt-1">Print this code on physical box/scratch-off label. It is NOT encoded in the QR.</small>
+              </div>
+            </div>
+
+            <div class="col-md-5 text-center">
+              <span class="text-muted small d-block mb-2">Generated Packaging QR</span>
+              <div class="p-2 bg-white rounded-3 d-inline-block shadow">
+                <img src="{{ data.qr_image_url }}" alt="AUTHENTIX QR" style="width: 170px; height: 170px;">
+              </div>
+              <p class="small text-muted mt-2 mb-0 font-code text-truncate max-w-200 mx-auto" title="{{ data.encoded_url }}">{{ data.encoded_url }}</p>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="d-flex flex-wrap justify-content-center gap-2">
+          <a href="{{ url_for('products.download_qr', product_id=data.product.product_id) }}" class="btn btn-cyan">
+            <i class="fa-solid fa-download me-2"></i> Download QR Image
+          </a>
+          <a href="{{ url_for('products.qr_display', product_id=data.product.product_id) }}" class="btn btn-outline-cyber">
+            <i class="fa-solid fa-print me-2"></i> Printable Packaging Sheet
+          </a>
+          <a href="{{ url_for('products.product_list') }}" class="btn btn-outline-cyber">
+            Back to Product List
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}AI Verification Intelligence | AUTHENTIX{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <!-- Header -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+      <span class="badge bg-primary bg-opacity-25 text-cyan px-3 py-1.5 rounded-pill small mb-1">
+        <i class="fa-solid fa-microchip me-1"></i> Anomaly & Counterfeit Telemetry
+      </span>
+      <h2 class="fw-bold text-white mb-0">AI Verification Intelligence</h2>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-cyan btn-sm" onclick="location.reload();">
+        <i class="fa-solid fa-rotate me-1"></i> Re-Analyze Telemetry
+      </button>
+    </div>
+  </div>
+
+  <!-- Key AI Indicator Cards -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-3 col-6">
+      <div class="glass-card p-3 text-center h-100">
+        <span class="text-muted small d-block">Overall System Risk</span>
+        <h2 class="fw-bold text-cyan my-1">{{ ai.overall_risk_score }} <small class="fs-6 text-muted">/ 100</small></h2>
+        <span class="badge badge-cyber badge-{{ ai.overall_risk_level | lower }}">{{ ai.overall_risk_level }}</span>
+      </div>
+    </div>
+
+    <div class="col-md-3 col-6">
+      <div class="glass-card p-3 text-center h-100">
+        <span class="text-muted small d-block">Failed Scan Rate</span>
+        <h2 class="fw-bold text-danger my-1">{{ ai.failed_verification_rate }}%</h2>
+        <span class="text-muted small">Code Mismatch Spikes</span>
+      </div>
+    </div>
+
+    <div class="col-md-3 col-6">
+      <div class="glass-card p-3 text-center h-100 border-danger border-opacity-50">
+        <span class="text-muted small d-block">High-Risk Products</span>
+        <h2 class="fw-bold text-danger my-1">{{ ai.high_risk_count }}</h2>
+        <span class="badge bg-danger text-white small">Action Required</span>
+      </div>
+    </div>
+
+    <div class="col-md-3 col-6">
+      <div class="glass-card p-3 text-center h-100">
+        <span class="text-muted small d-block">Suspicious Activity</span>
+        <h2 class="fw-bold text-warning my-1">{{ ai.suspicious_count }}</h2>
+        <span class="badge bg-warning bg-opacity-25 text-warning small">Multi-device Spikes</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart Grid -->
+  <div class="row g-4 mb-4">
+    <!-- Chart 1: Daily Verifications -->
+    <div class="col-lg-6">
+      <div class="glass-card p-4 h-100">
+        <h6 class="fw-bold text-white mb-3"><i class="fa-solid fa-chart-line text-cyan me-2"></i> Daily Verification Volume</h6>
+        <div style="height: 250px;">
+          <canvas id="dailyChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart 2: Success vs Failed -->
+    <div class="col-lg-6">
+      <div class="glass-card p-4 h-100">
+        <h6 class="fw-bold text-white mb-3"><i class="fa-solid fa-chart-pie text-cyan me-2"></i> Genuine vs Counterfeit Scan Ratio</h6>
+        <div style="height: 250px;">
+          <canvas id="statusChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart 3: Risk Distribution -->
+    <div class="col-lg-6">
+      <div class="glass-card p-4 h-100">
+        <h6 class="fw-bold text-white mb-3"><i class="fa-solid fa-chart-bar text-cyan me-2"></i> Product Risk Score Distribution</h6>
+        <div style="height: 250px;">
+          <canvas id="riskDistChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart 4: Top Verified Products -->
+    <div class="col-lg-6">
+      <div class="glass-card p-4 h-100">
+        <h6 class="fw-bold text-white mb-3"><i class="fa-solid fa-fire text-cyan me-2"></i> Most Frequently Verified Products</h6>
+        <div style="height: 250px;">
+          <canvas id="topProdChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flagged Products Table -->
+  <div class="glass-card p-4">
+    <h5 class="fw-bold text-white mb-3"><i class="fa-solid fa-triangle-exclamation text-warning me-2"></i> Suspicious & High-Risk Products</h5>
+    <div class="table-responsive">
+      <table class="table-cyber">
+        <thead>
+          <tr>
+            <th>Product ID</th>
+            <th>Product Name</th>
+            <th>Brand</th>
+            <th>Total Scans</th>
+            <th>Failures</th>
+            <th>Devices</th>
+            <th>Risk Score</th>
+            <th>Risk Reason</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in ai.product_risks %}
+          <tr class="{% if p.risk_level in ['HIGH', 'CRITICAL'] %}bg-danger bg-opacity-10{% endif %}">
+            <td class="font-code text-cyan fw-bold">{{ p.product_id }}</td>
+            <td class="text-white fw-bold">{{ p.product_name }}</td>
+            <td class="text-muted small">{{ p.brand }}</td>
+            <td class="font-code text-center">{{ p.total_attempts }}</td>
+            <td class="font-code text-center text-danger">{{ p.failed_attempts }}</td>
+            <td class="font-code text-center">{{ p.distinct_devices }}</td>
+            <td>
+              {% if p.risk_level == 'LOW' %}
+                <span class="badge badge-cyber badge-low">{{ p.risk_score }} / 100</span>
+              {% elif p.risk_level == 'MEDIUM' %}
+                <span class="badge badge-cyber badge-medium">{{ p.risk_score }} / 100</span>
+              {% elif p.risk_level == 'HIGH' %}
+                <span class="badge badge-cyber badge-high">{{ p.risk_score }} / 100</span>
+              {% else %}
+                <span class="badge badge-cyber badge-critical">{{ p.risk_score }} / 100</span>
+              {% endif %}
+            </td>
+            <td class="small text-muted">{{ p.reason | truncate(45) }}</td>
+            <td>
+              <a href="{{ url_for('analytics.product_intelligence_page', product_id=p.product_id) }}" class="btn btn-outline-cyber btn-sm">
+                Inspect AI
+              </a>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="9" class="text-center text-muted py-4">No suspicious activity detected across catalog.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  window.aiChartData = {{ ai.charts | tojson }};
+  window.aiTopProducts = {{ ai.top_verified_products | tojson }};
+</script>
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+{% endblock %}

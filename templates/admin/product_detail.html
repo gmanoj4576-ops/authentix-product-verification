@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.product_name }} | AUTHENTIX Detail{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+      <span class="font-code text-cyan fw-bold mb-1 d-block">{{ product.product_id }}</span>
+      <h2 class="fw-bold text-white mb-0">{{ product.product_name }}</h2>
+    </div>
+    <div class="d-flex gap-2">
+      <form action="{{ url_for('products.disable_product', product_id=product.product_id) }}" method="POST">
+        {% if product.status == 'Active' %}
+          <button type="submit" class="btn btn-outline-danger btn-sm">
+            <i class="fa-solid fa-ban me-1"></i> Disable Product
+          </button>
+        {% else %}
+          <button type="submit" class="btn btn-outline-success btn-sm">
+            <i class="fa-solid fa-check-circle me-1"></i> Re-enable Product
+          </button>
+        {% endif %}
+      </form>
+      <a href="{{ url_for('products.qr_display', product_id=product.product_id) }}" class="btn btn-cyan btn-sm">
+        <i class="fa-solid fa-qrcode me-1"></i> Packaging QR
+      </a>
+      <a href="{{ url_for('analytics.product_intelligence_page', product_id=product.product_id) }}" class="btn btn-outline-cyber btn-sm">
+        <i class="fa-solid fa-brain me-1 text-cyan"></i> AI Risk Detail
+      </a>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Product Specs Card -->
+    <div class="col-lg-6">
+      <div class="glass-card p-4 h-100">
+        <h5 class="fw-bold text-white mb-3"><i class="fa-solid fa-box text-cyan me-2"></i> Specifications</h5>
+        
+        <table class="table table-dark table-borderless small align-middle mb-0">
+          <tbody>
+            <tr><td class="text-muted">Brand</td><td class="text-white fw-bold">{{ product.brand }}</td></tr>
+            <tr><td class="text-muted">Category</td><td class="text-white">{{ product.category }}</td></tr>
+            <tr><td class="text-muted">Manufacturer</td><td class="text-white">{{ product.manufacturer or 'N/A' }}</td></tr>
+            <tr><td class="text-muted">Batch Number</td><td class="font-code text-white">{{ product.batch_number }}</td></tr>
+            <tr><td class="text-muted">Manufacturing Date</td><td class="text-white">{{ product.manufacturing_date or 'N/A' }}</td></tr>
+            <tr><td class="text-muted">Expiry Date</td><td class="text-white">{{ product.expiry_date or 'N/A' }}</td></tr>
+            <tr><td class="text-muted">QR Reference Token</td><td class="font-code text-cyan text-truncate max-w-200">{{ product.qr_reference }}</td></tr>
+            <tr>
+              <td class="text-muted">Status</td>
+              <td>
+                {% if product.status == 'Active' %}
+                  <span class="badge badge-cyber badge-active">Active</span>
+                {% elif product.status == 'Disabled' %}
+                  <span class="badge badge-cyber badge-disabled">Disabled</span>
+                {% else %}
+                  <span class="badge badge-cyber badge-expired">Expired</span>
+                {% endif %}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- AI Risk Summary Card -->
+    <div class="col-lg-6">
+      <div class="glass-card p-4 h-100">
+        <h5 class="fw-bold text-white mb-3"><i class="fa-solid fa-shield-halved text-cyan me-2"></i> Authentication AI Telemetry</h5>
+        
+        <div class="p-3 bg-dark bg-opacity-50 rounded-3 mb-3 text-center border border-secondary border-opacity-25">
+          <span class="text-muted small d-block">Current AI Risk Score</span>
+          <h2 class="display-6 fw-extrabold text-cyan my-1">{{ risk.risk_score }} / 100</h2>
+          
+          {% if risk.risk_level == 'LOW' %}
+            <span class="badge badge-cyber badge-low fs-6">LOW RISK</span>
+          {% elif risk.risk_level == 'MEDIUM' %}
+            <span class="badge badge-cyber badge-medium fs-6">MEDIUM RISK</span>
+          {% elif risk.risk_level == 'HIGH' %}
+            <span class="badge badge-cyber badge-high fs-6">HIGH RISK</span>
+          {% else %}
+            <span class="badge badge-cyber badge-critical fs-6">CRITICAL ANOMALY</span>
+          {% endif %}
+        </div>
+
+        <p class="small text-muted mb-2"><strong>AI Analysis Reason:</strong></p>
+        <div class="alert alert-dark bg-dark text-muted small p-3 rounded-3 mb-0">
+          {{ risk.reason }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Verification History -->
+  <div class="glass-card p-4 mt-4">
+    <h5 class="fw-bold text-white mb-3">Verification Attempt History</h5>
+    <div class="table-responsive">
+      <table class="table-cyber">
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>Status</th>
+            <th>Failure Reason</th>
+            <th>Device Information</th>
+            <th>Source</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for log in logs %}
+          <tr>
+            <td class="font-code small text-muted">{{ log.timestamp }}</td>
+            <td>
+              {% if log.verification_status == 'VERIFIED' %}
+                <span class="badge badge-cyber badge-low">VERIFIED</span>
+              {% elif log.verification_status == 'INCORRECT_CODE' %}
+                <span class="badge badge-cyber badge-high">INCORRECT CODE</span>
+              {% elif log.verification_status == 'SUSPICIOUS' %}
+                <span class="badge badge-cyber badge-critical">SUSPICIOUS</span>
+              {% else %}
+                <span class="badge badge-cyber badge-disabled">{{ log.verification_status }}</span>
+              {% endif %}
+            </td>
+            <td class="small text-muted">{{ log.failure_reason or 'None' }}</td>
+            <td class="small text-muted">{{ log.device_information | truncate(40) }}</td>
+            <td class="small text-muted">{{ log.verification_source }}</td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="5" class="text-center text-muted py-3">No verification logs recorded for this product yet.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

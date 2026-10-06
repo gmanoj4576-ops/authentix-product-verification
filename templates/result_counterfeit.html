@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}POSSIBLE COUNTERFEIT WARNING | AUTHENTIX{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="glass-card result-container border-danger border-opacity-75">
+    <div class="pulse-badge-danger">
+      <i class="fa-solid fa-triangle-exclamation fs-1"></i>
+    </div>
+
+    <h1 class="display-6 fw-bold text-danger mb-2">&warning; POSSIBLE COUNTERFEIT ITEM</h1>
+    
+    <div class="alert alert-danger bg-danger bg-opacity-20 border-danger text-white p-4 mb-4 rounded-4 text-start">
+      <h5 class="fw-bold mb-2"><i class="fa-solid fa-shield-xmark me-2"></i> Verification Code Mismatch</h5>
+      <p class="mb-0 fs-6" style="line-height: 1.6;">
+        The verification code you typed does <strong>NOT match</strong> the manufacturer records for this product. Please double-check the 12-character code printed on your product box or tag and try typing it again.
+      </p>
+    </div>
+
+    <div class="bg-dark bg-opacity-75 p-4 rounded-4 text-start mb-4 border border-secondary border-opacity-25">
+      <h6 class="fw-bold text-white mb-2"><i class="fa-solid fa-hand-holding-hand text-cyan me-2"></i> What should you do next?</h6>
+      <ol class="text-muted small mb-0 ps-3" style="line-height: 1.8;">
+        <li>Re-examine your product box to make sure you didn't mistype any letter or number.</li>
+        <li>If you typed the code correctly and it still fails, contact the retailer or brand support where you purchased the item.</li>
+        <li>This verification attempt has been logged in our AI security system to protect consumers against fake goods.</li>
+      </ol>
+    </div>
+
+    {% if result.product %}
+    <div class="bg-dark bg-opacity-75 p-3 rounded-3 text-start mb-4 border border-secondary border-opacity-25">
+      <div class="row g-2">
+        <div class="col-6">
+          <span class="text-muted small d-block">Scanned Product ID</span>
+          <strong class="text-white font-code">{{ result.product.product_id }}</strong>
+        </div>
+        <div class="col-6">
+          <span class="text-muted small d-block">Registered Brand</span>
+          <strong class="text-white">{{ result.product.brand }}</strong>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="d-flex flex-wrap justify-content-center gap-3">
+      <a href="{{ url_for('verification.verify_page') }}" class="btn btn-outline-danger btn-lg px-4 py-2.5">
+        <i class="fa-solid fa-rotate-left me-2"></i> Try Code Again
+      </a>
+      <a href="{{ url_for('index') }}" class="btn btn-outline-cyber btn-lg px-4 py-2.5">
+        Return to Home
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

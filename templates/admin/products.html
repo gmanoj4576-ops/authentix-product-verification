@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}Product Management | AUTHENTIX{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <!-- Header -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+      <h2 class="fw-bold text-white mb-1">Product Catalog</h2>
+      <p class="text-muted small mb-0">Manage registered genuine products, view risk levels, and issue QR references.</p>
+    </div>
+    <a href="{{ url_for('products.register_product') }}" class="btn btn-cyan">
+      <i class="fa-solid fa-plus me-1"></i> Register New Product
+    </a>
+  </div>
+
+  <!-- Search & Filter Controls -->
+  <div class="glass-card p-3 mb-4">
+    <form action="{{ url_for('products.product_list') }}" method="GET" class="row g-2 align-items-center">
+      <div class="col-md-4">
+        <div class="input-group input-group-sm">
+          <span class="input-group-text bg-dark text-muted border-secondary"><i class="fa-solid fa-magnifying-glass"></i></span>
+          <input type="text" name="search" class="form-control bg-dark text-white border-secondary" placeholder="Search by name, brand, ID, batch..." value="{{ search }}">
+        </div>
+      </div>
+
+      <div class="col-6 col-md-3">
+        <select name="category" class="form-select form-select-sm bg-dark text-white border-secondary" onchange="this.form.submit()">
+          <option value="All" {% if category == 'All' %}selected{% endif %}>All Categories</option>
+          <option value="Personal Care" {% if category == 'Personal Care' %}selected{% endif %}>Personal Care</option>
+          <option value="Food & Beverage" {% if category == 'Food & Beverage' %}selected{% endif %}>Food & Beverage</option>
+          <option value="Electronics" {% if category == 'Electronics' %}selected{% endif %}>Electronics</option>
+          <option value="Footwear" {% if category == 'Footwear' %}selected{% endif %}>Footwear</option>
+          <option value="Cosmetics" {% if category == 'Cosmetics' %}selected{% endif %}>Cosmetics</option>
+        </select>
+      </div>
+
+      <div class="col-6 col-md-3">
+        <select name="status" class="form-select form-select-sm bg-dark text-white border-secondary" onchange="this.form.submit()">
+          <option value="All" {% if status == 'All' %}selected{% endif %}>All Statuses</option>
+          <option value="Active" {% if status == 'Active' %}selected{% endif %}>Active</option>
+          <option value="Disabled" {% if status == 'Disabled' %}selected{% endif %}>Disabled</option>
+          <option value="Expired" {% if status == 'Expired' %}selected{% endif %}>Expired</option>
+        </select>
+      </div>
+
+      <div class="col-md-2 text-end">
+        <button type="submit" class="btn btn-outline-cyber btn-sm w-100">Filter</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Products Table -->
+  <div class="glass-card p-4">
+    <div class="table-responsive">
+      <table class="table-cyber">
+        <thead>
+          <tr>
+            <th>Product ID</th>
+            <th>Product Name</th>
+            <th>Brand</th>
+            <th>Category</th>
+            <th>Batch</th>
+            <th>Status</th>
+            <th>Scans</th>
+            <th>AI Risk Level</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in products %}
+          <tr>
+            <td class="font-code text-cyan fw-bold">{{ p.product_id }}</td>
+            <td>
+              <strong class="text-white d-block">{{ p.product_name }}</strong>
+              <span class="small text-muted">Ref: {{ p.qr_reference[:12] }}...</span>
+            </td>
+            <td class="text-white">{{ p.brand }}</td>
+            <td class="small text-muted">{{ p.category }}</td>
+            <td class="font-code small text-white">{{ p.batch_number }}</td>
+            <td>
+              {% if p.status == 'Active' %}
+                <span class="badge badge-cyber badge-active">Active</span>
+              {% elif p.status == 'Disabled' %}
+                <span class="badge badge-cyber badge-disabled">Disabled</span>
+              {% else %}
+                <span class="badge badge-cyber badge-expired">Expired</span>
+              {% endif %}
+            </td>
+            <td class="font-code fw-bold text-center">{{ p.verification_count }}</td>
+            <td>
+              {% if p.risk_level == 'LOW' %}
+                <span class="badge badge-cyber badge-low">LOW ({{ p.risk_score }})</span>
+              {% elif p.risk_level == 'MEDIUM' %}
+                <span class="badge badge-cyber badge-medium">MEDIUM ({{ p.risk_score }})</span>
+              {% elif p.risk_level == 'HIGH' %}
+                <span class="badge badge-cyber badge-high">HIGH ({{ p.risk_score }})</span>
+              {% else %}
+                <span class="badge badge-cyber badge-critical">CRITICAL ({{ p.risk_score }})</span>
+              {% endif %}
+            </td>
+            <td>
+              <div class="btn-group btn-group-sm">
+                <a href="{{ url_for('products.product_detail', product_id=p.product_id) }}" class="btn btn-outline-cyber" title="View Detail">
+                  <i class="fa-solid fa-eye"></i>
+                </a>
+                <a href="{{ url_for('products.qr_display', product_id=p.product_id) }}" class="btn btn-outline-cyber" title="View QR">
+                  <i class="fa-solid fa-qrcode"></i>
+                </a>
+                <a href="{{ url_for('analytics.product_intelligence_page', product_id=p.product_id) }}" class="btn btn-outline-cyber text-cyan" title="AI Intelligence">
+                  <i class="fa-solid fa-brain"></i>
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="9" class="text-center text-muted py-4">No products found matching filters.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

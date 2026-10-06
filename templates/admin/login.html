@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Login | AUTHENTIX{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-5 col-lg-4">
+      <div class="glass-card p-4 p-md-5">
+        <div class="text-center mb-4">
+          <div class="d-inline-flex p-3 rounded-circle bg-primary bg-opacity-25 text-cyan mb-3">
+            <i class="fa-solid fa-user-lock fs-2"></i>
+          </div>
+          <h3 class="fw-bold text-white mb-1">Admin Portal</h3>
+          <p class="text-muted small">Protected Manufacturer Authentication</p>
+        </div>
+
+        {% if error %}
+        <div class="alert alert-danger bg-danger bg-opacity-20 border-danger text-white small p-3 rounded-3 mb-3">
+          <i class="fa-solid fa-triangle-exclamation me-1"></i> {{ error }}
+        </div>
+        {% endif %}
+
+        <form action="{{ url_for('auth.admin_login') }}" method="POST">
+          <div class="mb-3">
+            <label class="form-label text-muted small fw-semibold">Admin Email</label>
+            <input type="email" name="email" class="form-control bg-dark text-white border-secondary" placeholder="admin@authentix.com" required value="admin@authentix.com">
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label text-muted small fw-semibold">Password</label>
+            <input type="password" name="password" class="form-control bg-dark text-white border-secondary" placeholder="••••••••" required value="admin123">
+            <div class="form-text text-muted small">Default Demo: <code>admin@authentix.com</code> / <code>admin123</code></div>
+          </div>
+
+          <button type="submit" class="btn btn-cyan w-100 py-2.5 fw-bold">
+            <i class="fa-solid fa-right-to-bracket me-2"></i> Login to Dashboard
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

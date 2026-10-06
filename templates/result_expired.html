@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}PRODUCT EXPIRED | AUTHENTIX{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="glass-card result-container border-warning">
+    <div class="pulse-badge-danger" style="border-color: #F59E0B; box-shadow: 0 0 30px rgba(245, 158, 11, 0.3);">
+      <i class="fa-solid fa-clock-rotate-left text-warning"></i>
+    </div>
+
+    <h1 class="h2 fw-bold text-warning mb-2">PRODUCT EXPIRED</h1>
+    
+    <p class="text-muted mb-4">
+      {{ result.message or 'This product has passed its authorized expiration date.' }}
+    </p>
+
+    {% if product %}
+    <div class="bg-dark bg-opacity-75 p-3 rounded-3 text-start mb-4 border border-warning border-opacity-25">
+      <h5 class="text-white fw-bold mb-1">{{ product.product_name }}</h5>
+      <p class="text-muted small mb-0">Expiry Date: <strong class="text-warning">{{ product.expiry_date }}</strong></p>
+    </div>
+    {% endif %}
+
+    <div class="d-flex justify-content-center gap-3">
+      <a href="{{ url_for('verification.verify_page') }}" class="btn btn-outline-cyber">
+        Verify Different Product
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

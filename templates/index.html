@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}AUTHENTIX | Simple & Real Product Verification{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="py-5 my-3">
+  <div class="container text-center">
+    <div class="row justify-content-center">
+      <div class="col-lg-9">
+        <span class="badge bg-primary bg-opacity-25 text-info px-3.5 py-2 rounded-pill fw-semibold mb-3 border border-info border-opacity-25">
+          <i class="fa-solid fa-user-shield me-1"></i> Human-Centered Fake Product Detection
+        </span>
+        
+        <h1 class="display-3 fw-extrabold text-white mb-3">
+          AUTH<span class="text-cyan">ENTIX</span>
+        </h1>
+        
+        <h3 class="h4 text-info fw-bold mb-3">Verify Before You Trust.</h3>
+        
+        <p class="lead text-muted max-w-700 mx-auto mb-4 fs-5" style="line-height: 1.6;">
+          Ever worried if the product you bought is fake or genuine? AUTHENTIX makes it super easy to check original products in seconds using your phone camera and a quick verification code.
+        </p>
+
+        <div class="d-flex flex-wrap justify-content-center gap-3 mt-4">
+          <a href="{{ url_for('verification.verify_page') }}" class="btn btn-cyan btn-lg px-4 py-3 fs-5">
+            <i class="fa-solid fa-camera me-2"></i> Verify a Product Now
+          </a>
+          <a href="{{ url_for('auth.admin_login') }}" class="btn btn-outline-cyber btn-lg px-4 py-3 fs-5">
+            <i class="fa-solid fa-building me-2"></i> Manufacturer Portal
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Why AUTHENTIX is Different (Simple Human Explanation) -->
+<section class="py-4">
+  <div class="container">
+    <div class="glass-card p-4 p-md-5">
+      <div class="row align-items-center g-4">
+        <div class="col-md-7">
+          <div class="d-inline-flex p-2.5 rounded-3 bg-cyan bg-opacity-15 text-cyan mb-3">
+            <i class="fa-solid fa-lightbulb fs-3"></i>
+          </div>
+          <h4 class="text-white fw-bold mb-2">Why a simple QR code is NOT enough:</h4>
+          <p class="text-muted fs-6 mb-0" style="line-height: 1.7;">
+            Fake product makers can easily copy and print a regular QR code on thousands of counterfeit boxes. 
+            <br><br>
+            That's why <strong>AUTHENTIX uses two separate keys</strong>: scanning the QR opens the official product page, but you also type a secret 12-digit code hidden on your physical box. Fake items won't have matching secret codes!
+          </p>
+        </div>
+        <div class="col-md-5">
+          <div class="bg-dark bg-opacity-60 p-4 rounded-4 border border-secondary border-opacity-25 text-center">
+            <i class="fa-solid fa-shield-cat text-cyan display-4 mb-3"></i>
+            <h5 class="text-white fw-bold">100% Copy-Proof Protection</h5>
+            <p class="small text-muted mb-0">The secret code stays private on your physical box label and is never revealed when scanning the QR code.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works (Crystal Clear 6 Steps) -->
+<section class="py-5">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold text-white mb-2">How It Works in 6 Easy Steps</h2>
+      <p class="text-muted fs-6">Step-by-step process from factory to your hands</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="glass-card glass-card-interactive step-card h-100 p-4">
+          <div class="step-num">01</div>
+          <h5 class="text-white fw-bold mb-2">1. Factory Registers Item</h5>
+          <p class="text-muted small mb-0">The real manufacturer registers the genuine product, batch number, and expiry date into our secure system.</p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="glass-card glass-card-interactive step-card h-100 p-4">
+          <div class="step-num">02</div>
+          <h5 class="text-white fw-bold mb-2">2. Unique QR & Secret Code</h5>
+          <p class="text-muted small mb-0">The system creates a unique QR code for the box label and a secret 12-character verification code.</p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="glass-card glass-card-interactive step-card h-100 p-4">
+          <div class="step-num">03</div>
+          <h5 class="text-white fw-bold mb-2">3. You Scan the QR</h5>
+          <p class="text-muted small mb-0">Use your phone camera or our built-in web scanner to scan the QR code printed on the product box.</p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="glass-card glass-card-interactive step-card h-100 p-4">
+          <div class="step-num">04</div>
+          <h5 class="text-white fw-bold mb-2">4. Type the Secret Code</h5>
+          <p class="text-muted small mb-0">Look at the product packaging or scratch-off sticker and type the 12-character verification code.</p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="glass-card glass-card-interactive step-card h-100 p-4">
+          <div class="step-num">05</div>
+          <h5 class="text-white fw-bold mb-2">5. Instant Instant Check</h5>
+          <p class="text-muted small mb-0">Our system securely verifies the code against factory records and confirms if your item is 100% genuine.</p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="glass-card glass-card-interactive step-card h-100 p-4">
+          <div class="step-num">06</div>
+          <h5 class="text-white fw-bold mb-2">6. Smart AI Monitoring</h5>
+          <p class="text-muted small mb-0">Our AI constantly monitors scan patterns to spot if fake copies of the same QR are being scanned repeatedly elsewhere.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Call To Action -->
+<section class="py-4 mb-4">
+  <div class="container text-center">
+    <div class="glass-card p-5 border-cyan border-opacity-25">
+      <h3 class="fw-bold text-white mb-2">Ready to verify your product?</h3>
+      <p class="text-muted mb-4 fs-6">It takes less than 10 seconds to make sure what you bought is 100% original.</p>
+      <a href="{{ url_for('verification.verify_page') }}" class="btn btn-cyan btn-lg px-5 py-3 fw-bold">
+        <i class="fa-solid fa-circle-check me-2"></i> Check Product Now
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}

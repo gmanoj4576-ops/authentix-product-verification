@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard | AUTHENTIX{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <!-- Dashboard Header -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+      <h2 class="fw-bold text-white mb-1">Manufacturer Security Dashboard</h2>
+      <p class="text-muted small mb-0">Overview of product registrations, verification activity, and AI risk scoring.</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="{{ url_for('products.register_product') }}" class="btn btn-cyan">
+        <i class="fa-solid fa-plus me-1"></i> Register Product
+      </a>
+      <a href="{{ url_for('analytics.ai_intelligence_page') }}" class="btn btn-outline-cyber">
+        <i class="fa-solid fa-brain me-1 text-cyan"></i> AI Intelligence
+      </a>
+    </div>
+  </div>
+
+  <!-- Metric Cards -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="glass-card p-3 text-center h-100">
+        <span class="text-muted small d-block">Total Products</span>
+        <h3 class="fw-bold text-white my-1">{{ stats.total_products }}</h3>
+        <span class="badge bg-primary bg-opacity-25 text-primary small">Registered</span>
+      </div>
+    </div>
+
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="glass-card p-3 text-center h-100">
+        <span class="text-muted small d-block">Total Scans</span>
+        <h3 class="fw-bold text-info my-1">{{ stats.total_verifications }}</h3>
+        <span class="badge bg-info bg-opacity-25 text-info small">Verifications</span>
+      </div>
+    </div>
+
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="glass-card p-3 text-center h-100">
+        <span class="text-muted small d-block">Verified</span>
+        <h3 class="fw-bold text-success my-1">{{ stats.successful_verifications }}</h3>
+        <span class="badge bg-success bg-opacity-25 text-success small">Genuine</span>
+      </div>
+    </div>
+
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="glass-card p-3 text-center h-100">
+        <span class="text-muted small d-block">Failed / Counterfeit</span>
+        <h3 class="fw-bold text-danger my-1">{{ stats.failed_verifications }}</h3>
+        <span class="badge bg-danger bg-opacity-25 text-danger small">Incorrect Code</span>
+      </div>
+    </div>
+
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="glass-card p-3 text-center h-100">
+        <span class="text-muted small d-block">Suspicious Spikes</span>
+        <h3 class="fw-bold text-warning my-1">{{ stats.suspicious_verifications }}</h3>
+        <span class="badge bg-warning bg-opacity-25 text-warning small">Flagged</span>
+      </div>
+    </div>
+
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="glass-card p-3 text-center h-100 border-danger border-opacity-50">
+        <span class="text-muted small d-block">High Risk</span>
+        <h3 class="fw-bold text-danger my-1">{{ stats.high_risk_count }}</h3>
+        <span class="badge bg-danger text-white small">AI Flagged</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Verification History Table -->
+  <div class="glass-card p-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="fw-bold text-white mb-0">Recent Verification Telemetry</h5>
+      <a href="{{ url_for('products.verification_logs') }}" class="btn btn-outline-cyber btn-sm">View All Logs</a>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table-cyber">
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>Product</th>
+            <th>Status</th>
+            <th>Device Information</th>
+            <th>Risk Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for log in recent_logs %}
+          <tr>
+            <td class="small text-muted font-code">{{ log.timestamp }}</td>
+            <td>
+              {% if log.product_name %}
+                <strong class="text-white d-block">{{ log.product_name }}</strong>
+                <span class="font-code small text-cyan">{{ log.product_id }}</span>
+              {% else %}
+                <span class="text-danger font-code">{{ log.product_id or 'Unknown Reference' }}</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if log.verification_status == 'VERIFIED' %}
+                <span class="badge badge-cyber badge-low"><i class="fa-solid fa-check me-1"></i> VERIFIED</span>
+              {% elif log.verification_status == 'INCORRECT_CODE' %}
+                <span class="badge badge-cyber badge-high"><i class="fa-solid fa-xmark me-1"></i> INCORRECT CODE</span>
+              {% elif log.verification_status == 'SUSPICIOUS' %}
+                <span class="badge badge-cyber badge-critical"><i class="fa-solid fa-triangle-exclamation me-1"></i> SUSPICIOUS</span>
+              {% else %}
+                <span class="badge badge-cyber badge-disabled">{{ log.verification_status }}</span>
+              {% endif %}
+            </td>
+            <td class="small text-muted">{{ log.device_information | truncate(35) }}</td>
+            <td>
+              <span class="font-code fw-bold text-cyan">{{ "%.1f"|format(log.risk_score or 0.0) }} / 100</span>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="5" class="text-center text-muted py-4">No verification logs recorded yet.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

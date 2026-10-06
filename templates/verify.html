@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Verify Product Authenticity | AUTHENTIX{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-7 col-md-9">
+
+      {% if not product %}
+      <!-- STEP 1: Friendly Camera QR Scan & Reference Helper -->
+      <div class="glass-card p-4 p-md-5 text-center">
+        
+        <div class="d-inline-flex p-3 rounded-circle bg-info bg-opacity-15 text-cyan mb-3">
+          <i class="fa-solid fa-camera-rotate fs-2"></i>
+        </div>
+
+        <h3 class="fw-bold text-white mb-2">Step 1: Scan Product QR Code</h3>
+        <p class="text-muted fs-6 mb-4">Point your camera at the AUTHENTIX QR code on your product box, upload a QR photo from your phone, or type the reference code below.</p>
+
+        <!-- Live Camera Scanner Container -->
+        <div id="qr-reader" style="display:none;" class="mb-3"></div>
+        <div id="qr-reader-file-temp" style="display:none;"></div>
+
+        <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
+          <button id="start-camera-btn" type="button" class="btn btn-cyan btn-lg px-4 py-2.5">
+            <i class="fa-solid fa-video me-2"></i> Open Camera Scanner
+          </button>
+          <button id="stop-camera-btn" type="button" class="btn btn-outline-danger btn-lg px-4 py-2.5" style="display:none;">
+            <i class="fa-solid fa-video-slash me-2"></i> Close Camera
+          </button>
+          <label class="btn btn-outline-cyber btn-lg px-4 py-2.5 mb-0 cursor-pointer">
+            <i class="fa-solid fa-image me-2"></i> Choose Photo from Gallery
+            <input type="file" id="qr-file-input" accept="image/*" style="display:none;">
+          </label>
+        </div>
+
+        <div class="alert alert-dark bg-dark text-muted small p-3 rounded-3 mb-4 text-start">
+          <i class="fa-solid fa-circle-info text-cyan me-2"></i>
+          <strong>Tip for best scanning:</strong> Ensure good lighting and hold your phone camera steady directly in front of the QR code sticker.
+        </div>
+
+        <hr class="border-secondary opacity-25 my-4">
+
+        <!-- Manual Reference Code Fallback -->
+        <form action="{{ url_for('verification.verify_page') }}" method="GET">
+          <div class="mb-2">
+            <label class="form-label text-muted small fw-semibold">Or Type QR Reference Code Manually</label>
+            <div class="input-group">
+              <span class="input-group-text bg-dark text-muted border-secondary"><i class="fa-solid fa-barcode"></i></span>
+              <input type="text" name="t" class="form-control bg-dark text-white border-secondary" placeholder="e.g. ref-a8b2c3d4e5f67890" value="{{ qr_reference }}" required>
+              <button class="btn btn-cyan px-4" type="submit">Continue</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      {% else %}
+      <!-- STEP 2 & 3: Product Info Recognized -> Prompt for Verification Code -->
+      <div class="glass-card p-4 p-md-5">
+        
+        <div class="text-center mb-4">
+          <span class="badge bg-success bg-opacity-25 text-success px-3.5 py-2 rounded-pill fw-semibold mb-2">
+            <i class="fa-solid fa-circle-check me-1"></i> Product Reference Recognized
+          </span>
+          <h3 class="fw-bold text-white mb-1">{{ product.product_name }}</h3>
+          <p class="text-muted small">Brand: <strong class="text-cyan">{{ product.brand }}</strong> &bull; Category: <strong class="text-white">{{ product.category }}</strong></p>
+        </div>
+
+        {% if product.image_url %}
+        <div class="text-center mb-4">
+          <img src="{{ product.image_url }}" alt="{{ product.product_name }}" class="img-fluid rounded-4 border border-secondary shadow-lg" style="max-height: 220px; object-fit: cover;">
+        </div>
+        {% endif %}
+
+        <div class="bg-dark bg-opacity-60 p-3.5 rounded-4 mb-4 border border-secondary border-opacity-25">
+          <div class="row g-2 text-center text-md-start">
+            <div class="col-6">
+              <span class="text-muted small d-block">Official Product ID</span>
+              <strong class="text-white font-code fs-6">{{ product.product_id }}</strong>
+            </div>
+            <div class="col-6">
+              <span class="text-muted small d-block">Batch Number</span>
+              <strong class="text-white font-code fs-6">{{ product.batch_number }}</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Verification Code Form -->
+        <form action="{{ url_for('verification.submit_verification_code') }}" method="POST">
+          <input type="hidden" name="qr_reference" value="{{ qr_reference }}">
+
+          <div class="mb-4 text-center">
+            <label class="form-label text-cyan fw-bold fs-5 mb-1">
+              <i class="fa-solid fa-key me-2"></i> Enter Secret Verification Code
+            </label>
+            <p class="text-muted small mb-3">
+              Look at your product box, tag, or scratch-off sticker and enter the 12-character code printed there.
+            </p>
+            
+            <input type="text" 
+                   name="verification_code" 
+                   class="form-control code-input-cyber mx-auto shadow-sm" 
+                   style="max-width: 400px; font-size: 1.5rem; letter-spacing: 5px;" 
+                   placeholder="X7K9-P4M2-Q8T6" 
+                   maxlength="16" 
+                   required 
+                   autocomplete="off" 
+                   autofocus>
+            <div class="form-text text-muted small mt-2">Example format: <code>X7K9-P4M2-Q8T6</code></div>
+          </div>
+
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-cyan btn-lg fw-bold py-3">
+              <i class="fa-solid fa-shield-check me-2"></i> Check If Item is Genuine
+            </button>
+            <a href="{{ url_for('verification.verify_page') }}" class="btn btn-link text-muted btn-sm mt-1">Scan a different product QR</a>
+          </div>
+        </form>
+
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/scanner.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Verification History Logs | AUTHENTIX{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+      <h2 class="fw-bold text-white mb-1">Verification History Audit Trail</h2>
+      <p class="text-muted small mb-0">Full audit log of customer verification attempts, scan locations, and device telemetry.</p>
+    </div>
+    <a href="{{ url_for('analytics.export_logs_csv') }}" class="btn btn-cyan">
+      <i class="fa-solid fa-file-csv me-2"></i> Export CSV Report
+    </a>
+  </div>
+
+  <div class="glass-card p-4">
+    <div class="table-responsive">
+      <table class="table-cyber">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Timestamp</th>
+            <th>Product ID</th>
+            <th>Product Name</th>
+            <th>Status</th>
+            <th>Failure Reason</th>
+            <th>Risk Score</th>
+            <th>Device Telemetry</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for log in logs %}
+          <tr>
+            <td class="font-code text-muted small">{{ log.id }}</td>
+            <td class="font-code text-muted small">{{ log.timestamp }}</td>
+            <td class="font-code text-cyan fw-bold">{{ log.product_id or 'INVALID' }}</td>
+            <td class="text-white">{{ log.product_name or 'N/A' }}</td>
+            <td>
+              {% if log.verification_status == 'VERIFIED' %}
+                <span class="badge badge-cyber badge-low">VERIFIED</span>
+              {% elif log.verification_status == 'INCORRECT_CODE' %}
+                <span class="badge badge-cyber badge-high">INCORRECT CODE</span>
+              {% elif log.verification_status == 'SUSPICIOUS' %}
+                <span class="badge badge-cyber badge-critical">SUSPICIOUS</span>
+              {% elif log.verification_status == 'INVALID_REFERENCE' %}
+                <span class="badge badge-cyber badge-high">INVALID REF</span>
+              {% else %}
+                <span class="badge badge-cyber badge-disabled">{{ log.verification_status }}</span>
+              {% endif %}
+            </td>
+            <td class="small text-muted">{{ log.failure_reason or 'None' }}</td>
+            <td class="font-code text-white fw-bold">{{ "%.1f"|format(log.risk_score or 0.0) }}</td>
+            <td class="small text-muted">{{ log.device_information | truncate(45) }}</td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="8" class="text-center text-muted py-4">No verification logs recorded.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
